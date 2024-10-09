@@ -1,10 +1,13 @@
 package com.wileyedge.database.dao;
 
 import com.wileyedge.database.model.*;
+import com.wileyedge.database.model.Course;
+import com.wileyedge.database.model.Student;
+
 import java.util.List;
 
 public interface SchoolDao {
-    List<Student> allStudents();
+    List<com.wileyedge.database.model.Student> allStudents();
     List<Student> studentsCS148();
     List<Course> csCourses();
     List<TeacherCount> teacherCountByDept();

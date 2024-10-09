@@ -1,6 +1,8 @@
 package com.wileyedge.database.dao;
 
 import com.wileyedge.database.model.*;
+import com.wileyedge.database.model.Course;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -36,7 +38,9 @@ public class SchoolDaoImpl implements SchoolDao {
         // sorted by last name.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "Select s.fName, s.lName\n" +
+                     "From student s\n" +
+                     "Order by s.lName asc;";
 
         // YOUR CODE ENDS HERE
 
@@ -49,7 +53,10 @@ public class SchoolDaoImpl implements SchoolDao {
         // for all courses in the Computer Science department.
         // YOUR CODE STARTS HERE
 
-         String sql = "";
+         String sql = "Select c.courseCode, c.courseDesc\n" +
+                      "From course c\n"+
+                      "Left Join teacher t ON c.teacherId = t.tid\n" +
+                      "Where t.dept = 'Computer Science';";
 
         // YOUR CODE ENDS HERE
         return jdbcTemplate.query(sql, new CourseMapper());
@@ -59,9 +66,11 @@ public class SchoolDaoImpl implements SchoolDao {
     public List<TeacherCount> teacherCountByDept() {
         //  Write a query that displays the department and the total number of teachers assigned to each department.
         //  Name the aggregate field `teacherCount`.
-        // YOUR CODE STARTS HERE
+        //  YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "Select dept AS Department, COUNT(*) AS teacherCount\n" +
+                     "From teacher\n" +
+                     "Group By dept;";
 
         // YOUR CODE ENDS HERE
         return jdbcTemplate.query(sql, new TeacherCountMapper());
@@ -74,7 +83,10 @@ public class SchoolDaoImpl implements SchoolDao {
         // Name the aggregate field `numStudents`.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "Select c.courseCode, c.courseDesc, COUNT(sc.student_id) AS numStudents\n" +
+                     "From course c\n" +
+                     "Join course_student sc ON c.cid = sc.course_id\n" +
+                     "Group By c.cid;";
 
         // YOUR CODE ENDS HERE
         return jdbcTemplate.query(sql, new StudentCountMapper());
@@ -87,11 +99,10 @@ public class SchoolDaoImpl implements SchoolDao {
         // Part 1: Write a query to add the student Robert Dylan to the student table.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "INSERT INTO student (fname, lname) VALUES ('Robert', 'Dylan');";
 
         // YOUR CODE ENDS HERE
          System.out.println(jdbcTemplate.update(sql));
-
     }
 
     @Override
@@ -99,7 +110,9 @@ public class SchoolDaoImpl implements SchoolDao {
         // Part 2: Write a query to add Robert Dylan to CS148.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "INSERT INTO course_student (student_id, course_id) " +
+                     "VALUES ((Select sid From student Where fName = 'Robert' AND lName = 'Dylan')," +
+                             "(Select cid From course Where courseCode = 'CS148'));";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);
@@ -110,7 +123,9 @@ public class SchoolDaoImpl implements SchoolDao {
         // Write a query to change the course description for course CS305 to "Advanced Python with Flask".
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "UPDATE course\n" +
+                     "SET courseDESC = 'Advanced Python with Flask'\n" +
+                     "Where courseCode = 'CS305';";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);
@@ -121,7 +136,8 @@ public class SchoolDaoImpl implements SchoolDao {
         // Write a query to remove David Mitchell as a teacher.
         // YOUR CODE STARTS HERE
 
-        String sql = "";
+        String sql = "DELETE From teacher\n" +
+                     "Where tid = (Select tid From teacher Where tFName = 'David' AND tLName = 'Mitchell');";
 
         // YOUR CODE ENDS HERE
         jdbcTemplate.update(sql);
@@ -131,16 +147,16 @@ public class SchoolDaoImpl implements SchoolDao {
     //***** DO NOT CHANGE THE SQL STRING IN THESE METHODS!!!
     @Override
     public List<Teacher> listAllTeachers() {
-        String sql = "Select * from Teacher;";
+        String sql = "Select * From Teacher;";
         return jdbcTemplate.query(sql, new TeacherMapper());
     }
 
     @Override
     public List<Student> studentsCS148() {
-        String sql = "select fname, lname\n" +
-                "from student s \n" +
-                "join course_student cs on s.sid = cs.student_id\n" +
-                "where course_id = 1;";
+        String sql = "Select fname, lname\n" +
+                "From student s \n" +
+                "Join course_student cs on s.sid = cs.student_id\n" +
+                "Where course_id = 1;";
         return jdbcTemplate.query(sql, new StudentMapper());
     }
 }

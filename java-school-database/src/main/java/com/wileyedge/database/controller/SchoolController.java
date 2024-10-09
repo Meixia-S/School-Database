@@ -1,7 +1,6 @@
 package com.wileyedge.database.controller;
 
 import com.wileyedge.database.dao.SchoolDao;
-import com.wileyedge.database.model.*;
 import com.wileyedge.database.model.Course;
 import com.wileyedge.database.model.Student;
 import com.wileyedge.database.model.StudentClassCount;
@@ -53,5 +52,4 @@ public class SchoolController {
     public void addNewStudentToClass() {
         dao.addStudentToClass();
     }
-
 }

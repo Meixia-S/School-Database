@@ -5,6 +5,8 @@ import com.wileyedge.database.dao.SchoolDaoImpl;
 import com.wileyedge.database.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import com.wileyedge.database.model.Student;
+import com.wileyedge.database.model.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -66,6 +68,7 @@ public class CourseDAOTest {
         List<StudentClassCount> studentCounts = dao.studentsPerClass();
         int i = 0;
         for (StudentClassCount sc : studentCounts) {
+            System.out.println(sc.getCourseCode());
             if (sc.getCourseCode().contains("CS305")) {
                 assertEquals(4, sc.getStudentCount());
             }
@@ -130,5 +133,4 @@ public class CourseDAOTest {
         }
         assertFalse(i != 0);
     }
-
 }
